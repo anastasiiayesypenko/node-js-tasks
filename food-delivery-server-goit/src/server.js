@@ -1,21 +1,23 @@
 const http = require('http');
-const url = require('url');
 const path = require('path');
 const fs = require('fs');
-const router = require('./routes');
+const qs = require('querystring');
+const router = require(path.join(__dirname, './routes'));
+const requestLib = require('request');
+
+
+
+
 
 const startServer = port => {
     const server = http.createServer((request, response) => {
-        const parsedUrl = url.parse(request.url);
-        console.log(parsedUrl.pathname);
-        // response.writeHead(200, {
-        //     'Content-Type': 'text/html'
-        // });
-        // const routing = router[parsedUrl.pathname] || router.default;
-        if (request.url.includes('products')) {
-            response.write('products');
+        if (request.url.includes('/products') && request.method === 'GET') {
+            router.products(request, response);
+        } else if (request.url.includes('/signup') && request.method === 'POST') {
+            router.signUp(request, response);
+        } else {
+            router.default(request, response);
         }
-        console.log(router[parsedUrl.pathname]);
         return response.end();
     });
     server.listen(port);
