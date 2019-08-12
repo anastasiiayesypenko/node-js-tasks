@@ -1,12 +1,6 @@
 const http = require('http');
 const path = require('path');
-const fs = require('fs');
-const qs = require('querystring');
 const router = require(path.join(__dirname, './routes'));
-const requestLib = require('request');
-
-
-
 
 
 const startServer = port => {

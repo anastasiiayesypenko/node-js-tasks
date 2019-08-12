@@ -1,19 +1,38 @@
-const qs = require('querystring');
-const fs = require('fs');
-const path = require('path');
-
-const DEFAULT_USER = JSON.stringify(require(path.join(__dirname, '..', '..', 'user.json')));
-
+const qs = require("querystring");
+const fs = require("fs");
+const path = require("path");
 
 const user = (request, response) => {
-    fs.appendFile(path.join(__dirname, '..', '..', 'db', 'users', `${DEFAULT_USER.username}.json`), DEFAULT_USER, function (error) {
-        if (error) throw error;
-    });
-    const user = JSON.parse(DEFAULT_USER);
-    const result = {
-        "status": "success",
-        user
-    }
-    response.end(JSON.stringify(result));
+    let body = '';
+    request.on('data', function (data) {
+            body = body + data;
+        })
+        .on('end', function () {
+            const post = qs.parse(body);
+            const result = {
+                status: "success",
+                post
+            };
+            const filename = JSON.parse(body).username;
+            const pathToUserFile = path.join(__dirname, "..", "..", "db", "users", `${filename}.json`);
+
+            fs.appendFile(
+                pathToUserFile,
+                body,
+                function (error) {
+                    if (error) {
+                        console.log(error);
+                    }
+                }
+            );
+
+            // response.writeHead(200, {
+            //     'Content-Type': 'application/json'
+            // });
+            // response.write(JSON.stringify(result));
+        })
+
+
 }
+
 module.exports = user;

@@ -6,6 +6,5 @@ const products = (request, response) => {
         'Content-Type': 'application/json'
     });
     response.write(JSON.stringify(productsDB));
-    return response.end();
 }
 module.exports = products;
