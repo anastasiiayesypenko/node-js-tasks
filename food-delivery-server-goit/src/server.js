@@ -1,6 +1,5 @@
 const http = require('http');
-const path = require('path');
-const router = require(path.join(__dirname, './routes'));
+const router = require('./routes');
 
 
 const startServer = port => {
