@@ -1,0 +1,16 @@
+{
+  "name": "marketplace-server-goit",
+  "version": "1.0.0",
+  "description": "homework hodejs",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon index.js",
+    "debug": "nodemon --inspect index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
