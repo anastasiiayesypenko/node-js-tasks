@@ -1,39 +1,46 @@
-const qs = require("querystring");
 const fs = require("fs");
 const path = require("path");
 
-const signup = (request, response) => {
-    if (request.method === "POST") {
+const signup = (req, res) => {
+    if (req.method === "POST") {
         let body = '';
-        request.on('data', function (data) {
+        req.on('data', function (data) {
                 body = body + data;
             })
             .on('end', function () {
-                const post = qs.parse(body);
-                const result = {
-                    status: "success",
-                    post
-                };
+                const user = JSON.parse(body);
                 const filename = JSON.parse(body).username;
                 const pathToUserFile = path.join(__dirname, "..", "..", "db", "users", `${filename}.json`);
+                if (fs.existsSync(pathToUserFile)) {
+                    res.end("User with such name already exists")
+                } else {
+                    const result = {
+                        status: "success",
+                        user
+                    };
 
-                fs.appendFile(
-                    pathToUserFile,
-                    body,
-                    function (error) {
-                        if (error) {
-                            console.log(error);
+
+                    fs.appendFile(
+                        pathToUserFile,
+                        body,
+                        function (error) {
+                            if (error) {
+                                console.log(error);
+                            }
                         }
-                    }
-                );
+                    );
 
-                // response.writeHead(200, {
-                //     'Content-Type': 'application/json'
-                // });
-                // response.write(JSON.stringify(result));
+                    res.writeHead(200, {
+                        'Content-Type': 'application/json'
+                    });
+                    res.write(JSON.stringify(result));
+                    res.end();
+                }
+
             })
+    } else {
+        res.end();
     }
-    response.end();
 
 
 }
