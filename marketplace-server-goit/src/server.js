@@ -1,12 +1,17 @@
 const http = require('http');
+const https = require('https');
 const routes = require('./routes');
 const url = require('url');
+const fs = require('fs')
+
+const options = {
+    // key: fs.readFileSync('./db'),
+    // cert: fs.readFileSync('./db')
+};
 
 const startServer = (port) => {
     const server = http.createServer((req, res) => {
-        const {
-            pathname
-        } = url.parse(req.url);
+
         if (req.url && req.url.includes('/products')) {
             const routing = routes['/products'];
             routing(req, res);
