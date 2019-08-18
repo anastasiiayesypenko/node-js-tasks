@@ -13,8 +13,8 @@ const products = (req, res) => {
         // products/:id
         if (req.url && req.url.match(productIdUrl)) {
             // reqexp lookahead & lookbehind match id in products/:id url after slash
-            const productMatch = Number(req.url.match(/(?<=\/)\d+|(?<=\/)\d+(?=\/)/));
-            const productId = productMatch[0];
+            const productMatch = req.url.match(/(?<=\/)\d+|(?<=\/)\d+(?=\/)/);
+            const productId = Number(productMatch[0]);
             res.writeHead(200, {
                 'Content-Type': 'application/json'
             });
