@@ -1,12 +1,10 @@
 const http = require('http');
 // const https = require('https');
 const routes = require('./routes');
-// const url = require('url');
-// const fs = require('fs')
 
 const options = {
-    // key: fs.readFileSync('./db'),
-    // cert: fs.readFileSync('./db')
+    // key: fs.readFileSync(''),
+    // cert: fs.readFileSync('')
 };
 
 const startServer = (port) => {
