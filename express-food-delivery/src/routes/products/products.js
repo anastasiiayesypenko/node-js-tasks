@@ -1,85 +1,27 @@
-const productsDB = require('../../db/products/all-products.json');
-const url = require('url');
-const querystring = require('querystring');
+const products = require('../../db/products/all-products');
 
-const products = (req, res) => {
-    if (req.method === "GET") {
-        // regexp pattern to find products/:id url
-        const productIdUrl = /\/products\/\d+/i;
-        const {
-            query
-        } = url.parse(req.url);
-
-        // products/:id
-        if (req.url && req.url.match(productIdUrl)) {
-            // reqexp lookahead & lookbehind match id in products/:id url after slash
-            const productMatch = req.url.match(/(?<=\/)\d+|(?<=\/)\d+(?=\/)/);
-            const productId = Number(productMatch[0]);
-
-            const requestProduct = productsDB.find((product) => product.id === productId);
-
-
-            // check if product with request id exists
-            if (requestProduct) {
-                const result = {
-                    status: "success",
-                    products: [requestProduct],
-                }
-
-                res.write(JSON.stringify(result));
-            } else {
-
-                res.write('404 not found');
-            }
-
-
-            // products/?ids='123,124'
-        } else if (query.includes('ids')) {
-
-            // find all characters after ids in brackets
-            const idString = query.match(/(?<=ids=').+(?='|'&)|(?<=ids=%27).+(?=%27|%27&)|(?<=ids=%22).+(?=%22|%22&)/);
-            const idList = idString && idString[0].split(',');
-            const requestProducts = productsDB.filter((product) => idList.includes(String(product.id)));
-
-
-            // check if products with request ids exists
-            if (requestProducts.length) {
-                const result = {
-                    status: "success",
-                    products: requestProducts,
-                };
-
-                res.write(JSON.stringify(result));
-            } else {
-
-                res.write('404 not found');
-            }
-
-
-            // products/?category="drinks"
-        } else if (query.includes('category')) {
-
-            const queryObj = querystring.parse(req.url);
-            const queryValue = Object.values(queryObj)[0];
-            const requestProducts = productsDB.filter((product) => {
-                return product.categories.includes(queryValue.replace(/'|"/g, ''));
-            });
-            const result = {
-                status: "success",
-                products: requestProducts,
-            };
-
-            res.write(JSON.stringify(result));
-
-
-
+const productsRoute = (req, res) => {
+    if (req.url.includes('?ids')) {
+        const ids = req.query.ids;
+        const idList = ids.split(',');
+        const bracketsPattern = /'|"/g;
+        const clearList = idList.map(id => Number(id.replace(bracketsPattern, '')));
+        const responseProducts = products.filter(product => clearList.includes(product.id));
+        res.setHeader('Content-Type', 'application/json');
+        res.status(200);
+        if (responseProducts.length > 0) {
+            res.send(JSON.stringify(responseProducts));
         } else {
-
-
-            res.write(JSON.stringify(productsDB));
+            const result = {
+                'status': 'no products',
+                'products': []
+            };
+            res.send(result);
         }
-
+    } else {
+        res.send(products);
     }
-    res.end();
-}
-module.exports = products;
+
+};
+
+module.exports = productsRoute;

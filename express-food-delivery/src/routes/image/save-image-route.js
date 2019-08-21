@@ -1,19 +1,21 @@
 const multer = require('multer');
-const fs = require('fs');
-const path = require('path');
-const util = require('util');
 const upload = multer({
-    dest: 'uploads/'
-})
+    dest: 'upload/'
+});
+const fs = require('fs');
+
+const type = upload.single('image');
 
 const saveImageMultipart = (req, res) => {
 
-    const fileObject = req.file;
+    const tmpPath = req && req.file;
 
-    const userId = req.body.userId;
-    console.log(fileObject, userId);
-    res.end('image')
+    const target_path = 'uploads/' + req.file.originalname;
+    //MulterError: Unexpected field
+    res.setHeader('Content-Type', 'multipart/form-data');
+    res.status(200);
+    res.send('images')
+
 };
 
-// добавляем промежуточный обработчик для post-multipart запросов
-module.exports = () => [upload.single('avatar'), saveImageMultipart];
+module.exports = () => [type, saveImageMultipart];

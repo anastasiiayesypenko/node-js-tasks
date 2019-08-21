@@ -1,13 +1,7 @@
-const main = (request, response) => {
-
-  response.write(`
-    <!doctype html>
-    <html>
-    <body>
-       <h1>Main<h1>
-    </body>
-    </html>
-  `);
-  response.end();
+const mainRoute = (req, res) => {
+  res.setHeader('Content-Type', 'text/plain');
+  res.send('main');
 }
-module.exports = main;
+
+
+module.exports = mainRoute;
