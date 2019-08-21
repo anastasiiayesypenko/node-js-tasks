@@ -6,8 +6,10 @@ const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
 const uniqid = require('uniqid');
+const multer = require('multer');
 const products = require('./db/products/all-products');
 const usersDB = require('./db/users/all-users.json');
+const getSaveImageHandlers = require('./routes/image/save-image-route');
 
 
 app.use(express.json());
@@ -189,18 +191,8 @@ app.post('/orders', (req, res) => {
         });
 });
 
-app.post('/images', (req, res) => {
-    res.setHeader('Content-Type', 'multipart/form-data');
-    res.status(201);
-    let body = '';
-    req.on('data', (chunk) => {
-            body += chunk;
-        })
-        .on('end', () => {
-            console.log(body);
-        })
-    res.send('image');
-})
+app.post('/images', getSaveImageHandlers())
+
 
 
 app.post('*', (req, res) => {
