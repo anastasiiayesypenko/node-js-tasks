@@ -1,6 +1,3 @@
-const uniqid = require('uniqid');
-const path = require('path');
-const fs = require('fs');
 const mongoose = require('mongoose');
 const UserModel = require('../../models/usersModel');
 
@@ -19,16 +16,14 @@ const postUserRoute = (req, res) => {
                 password: requestBody.password,
                 email: requestBody.email,
             })
-            user.save().then(result => {
-                console.log(result)
-            }).catch(err => console.log(err));
+            user.save((err) => {
+                if (err) throw err;
+                console.log('user saved');
+            });
             res.status(201).json({
-                message: "Horosho vse",
+                message: "Success! User was added to db",
                 createdUser: user
             })
-
-
-
         })
 };
 

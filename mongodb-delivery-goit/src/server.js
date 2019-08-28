@@ -9,7 +9,9 @@ const config = {
     useNewUrlParser: true,
 };
 const dbUrl = 'mongodb+srv://nastiyayesypenko:' + password + '@cluster0-kgmph.mongodb.net/test?retryWrites=true&w=majority'
-mongoose.connect(dbUrl, config);
+mongoose.connect(dbUrl, config, () => {
+    console.log('db connected');
+});
 
 app.use(express.json());
 app.use(cors());

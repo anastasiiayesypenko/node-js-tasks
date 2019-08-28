@@ -1,30 +1,27 @@
-const products = require('../../db/products/all-products');
 const ProductModel = require('../../models/productsModel');
 
 const productsRoute = (req, res) => {
 
-    const product = new ProductModel();
-
 
     if (req.url.includes('?ids')) {
         const ids = req.query.ids;
-        const idList = ids.split(',');
-        const bracketsPattern = /'|"/g;
-        const clearList = idList.map(id => Number(id.replace(bracketsPattern, '')));
-        const responseProducts = products.filter(product => clearList.includes(product.id));
-        res.setHeader('Content-Type', 'application/json');
-        res.status(200);
-        if (responseProducts.length > 0) {
-            res.send(JSON.stringify(responseProducts));
-        } else {
-            const result = {
-                'status': 'no products',
-                'products': []
-            };
-            res.send(result);
-        }
+        const bracketsPattern = /'|"|\"/g;
+        const emptyList = [];
+        emptyList.push(ids);
+        const idList = ids.includes(',') ? ids.split(',') : emptyList;
+        const clearList = idList.map(id => id.replace(bracketsPattern, ''));
+        ProductModel.find({
+                _id: clearList,
+            })
+            .exec()
+            .then(result => res.send(result))
+            .catch(err => res.send(err));
+
     } else {
-        res.send(products);
+        ProductModel.find()
+            .exec()
+            .then(result => res.send(result))
+            .catch(err => res.send(err));
     }
 
 };
